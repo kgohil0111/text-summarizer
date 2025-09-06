@@ -1,103 +1,176 @@
-import Image from "next/image";
+"use client"
 
-export default function Home() {
+import { useState } from "react"
+
+export default function TextSummarizerPage() {
+  const [inputText, setInputText] = useState("")
+  const [summary, setSummary] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
+
+  const handleSummarize = async () => {
+    if (!inputText.trim()) {
+      setError("Please enter some text to summarize")
+      return
+    }
+
+    setIsLoading(true)
+    setError("")
+
+    try {
+      const response = await fetch("/api/summarize", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text: inputText }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to summarize text")
+      }
+
+      const data = await response.json()
+      setSummary(data.summary)
+    } catch (err) {
+      setError("Failed to summarize text. Please try again.")
+      console.error("Summarization error:", err)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleCopy = async () => {
+    if (summary) {
+      await navigator.clipboard.writeText(summary)
+      alert("Summary copied to clipboard!")
+    }
+  }
+
+  const handleClear = () => {
+    setInputText("")
+    setSummary("")
+    setError("")
+  }
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow-sm border-b">
+        <div className="max-w-4xl mx-auto px-4 py-6">
+          <h1 className="text-3xl font-bold text-gray-900">AI Text Summarizer</h1>
+          <p className="text-gray-600 mt-2">Transform your text with AI-powered summarization</p>
+        </div>
+      </header>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+      {/* Main Content */}
+      <main className="max-w-4xl mx-auto px-4 py-8">
+        <div className="grid gap-8 lg:grid-cols-2">
+          {/* Input Section */}
+          <div className="bg-white rounded-lg shadow-sm border p-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Input Text</h2>
+
+            <textarea
+              placeholder="Paste your text here to get an AI-generated summary..."
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              className="w-full h-80 p-4 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+
+            <div className="flex items-center justify-between mt-4">
+              <span className="text-sm text-gray-500">{inputText.length} characters</span>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={handleClear}
+                  disabled={!inputText && !summary}
+                  className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Clear
+                </button>
+
+                <button
+                  onClick={handleSummarize}
+                  disabled={isLoading || !inputText.trim()}
+                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed min-w-[120px]"
+                >
+                  {isLoading ? "Summarizing..." : "Summarize"}
+                </button>
+              </div>
+            </div>
+
+            {error && (
+              <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-700 text-sm">{error}</p>
+              </div>
+            )}
+          </div>
+
+          {/* Output Section */}
+          <div className="bg-white rounded-lg shadow-sm border p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-gray-900">Summary</h2>
+              {summary && (
+                <button
+                  onClick={handleCopy}
+                  className="px-3 py-1 text-sm text-blue-600 border border-blue-200 rounded hover:bg-blue-50"
+                >
+                  Copy
+                </button>
+              )}
+            </div>
+
+            {summary ? (
+              <div>
+                <div className="p-4 bg-gray-50 border rounded-lg h-80 overflow-y-auto">
+                  <p className="text-gray-800 leading-relaxed whitespace-pre-wrap">{summary}</p>
+                </div>
+                <p className="text-sm text-gray-500 mt-2">{summary.length} characters</p>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center h-80 text-center border-2 border-dashed border-gray-200 rounded-lg">
+                <div>
+                  <div className="w-12 h-12 mx-auto bg-gray-100 rounded-full flex items-center justify-center mb-3">
+                    <span className="text-gray-400 text-xl">✨</span>
+                  </div>
+                  <p className="text-gray-500">Your AI-generated summary will appear here</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Instructions */}
+        <div className="bg-white rounded-lg shadow-sm border p-6 mt-8">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6">How to Use</h2>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            <div className="text-center">
+              <div className="w-10 h-10 mx-auto bg-blue-600 text-white rounded-full flex items-center justify-center font-semibold mb-3">
+                1
+              </div>
+              <h3 className="font-medium text-gray-900 mb-2">Paste Your Text</h3>
+              <p className="text-sm text-gray-600">Copy and paste the text you want to summarize into the input area</p>
+            </div>
+
+            <div className="text-center">
+              <div className="w-10 h-10 mx-auto bg-blue-600 text-white rounded-full flex items-center justify-center font-semibold mb-3">
+                2
+              </div>
+              <h3 className="font-medium text-gray-900 mb-2">Click Summarize</h3>
+              <p className="text-sm text-gray-600">Press the summarize button to generate an AI-powered summary</p>
+            </div>
+
+            <div className="text-center">
+              <div className="w-10 h-10 mx-auto bg-blue-600 text-white rounded-full flex items-center justify-center font-semibold mb-3">
+                3
+              </div>
+              <h3 className="font-medium text-gray-900 mb-2">Copy & Use</h3>
+              <p className="text-sm text-gray-600">Copy the generated summary and use it wherever you need</p>
+            </div>
+          </div>
         </div>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
-  );
+  )
 }
