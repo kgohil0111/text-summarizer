@@ -9,9 +9,7 @@ export async function POST(req: Request) {
   const response = await hf.chatCompletion({
     provider: "groq",
     model: "openai/gpt-oss-120b",
-    messages: [
-      { role: "user", content: message }
-    ],
+    messages: [{ role: "user", content: message }],
     max_tokens: 200,
   });
 
