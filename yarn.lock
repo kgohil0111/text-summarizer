@@ -7,6 +7,24 @@
   resolved "https://registry.yarnpkg.com/@alloc/quick-lru/-/quick-lru-5.2.0.tgz#7bf68b20c0a350f936915fcae06f58e32007ce30"
   integrity sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==
 
+"@huggingface/inference@^4.7.1":
+  version "4.7.1"
+  resolved "https://registry.yarnpkg.com/@huggingface/inference/-/inference-4.7.1.tgz#38435f386c5cdd806b7a7f86f5971ee0365de504"
+  integrity sha512-gXrMocGDsE6kUZPEj82c3O+/OKnIfbHvg9rYjGA6svbWrYVmHCIAdCrrgCwNl2v5GELfPJrrfIv0bvzCTfa64A==
+  dependencies:
+    "@huggingface/jinja" "^0.5.1"
+    "@huggingface/tasks" "^0.19.35"
+
+"@huggingface/jinja@^0.5.1":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@huggingface/jinja/-/jinja-0.5.1.tgz#081d334ddcf6237f65561ae3d665bb713a8ff74f"
+  integrity sha512-yUZLld4lrM9iFxHCwFQ7D1HW2MWMwSbeB7WzWqFYDWK+rEb+WldkLdAJxUPOmgICMHZLzZGVcVjFh3w/YGubng==
+
+"@huggingface/tasks@^0.19.35":
+  version "0.19.43"
+  resolved "https://registry.yarnpkg.com/@huggingface/tasks/-/tasks-0.19.43.tgz#fa0401c23be574081dd558e4c809e7e7106a146e"
+  integrity sha512-ANO23K3ugclBl6VLwdt+7MxBkRkKEE17USUSqprHb29UB5ISigH+0AJcEuDA064uzn0hqYrG/nOcv1yARRt8bw==
+
 "@isaacs/cliui@^8.0.2":
   version "8.0.2"
   resolved "https://registry.yarnpkg.com/@isaacs/cliui/-/cliui-8.0.2.tgz#b37667b7bc181c168782259bab42474fbf52b550"

@@ -59,7 +59,7 @@ export default function TextSummarizerPage() {
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-4xl mx-auto px-4 py-6">
           <h1 className="text-3xl font-bold text-gray-900">AI Text Summarizer</h1>
-          <p className="text-gray-600 mt-2">Transform your text with AI-powered summarization</p>
+          <p className="text-gray-600 mt-2">Transform your text with AI-powered summarization (Hugging Face Inference API Call)</p>
         </div>
       </header>
 

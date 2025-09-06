@@ -21,11 +21,7 @@ export async function POST(request: NextRequest) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        inputs: text,
-        parameters: {
-          max_length: 150,
-          min_length: 30,
-        },
+        inputs: text
       }),
     })
 
