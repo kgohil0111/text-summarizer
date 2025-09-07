@@ -33,9 +33,9 @@ export default function SentimentPage() {
   return (
     <div className="flex flex-col items-center p-6 min-h-screen bg-gray-50">
       <h1 className="text-2xl font-bold mb-4">📝 Sentiment Analysis</h1>
-
+      <p>( model distilbert-base-uncased-finetuned-sst-2-english with hf-inference provider )</p>
       <textarea
-        className="w-full max-w-lg border rounded-lg p-2 mb-4 h-32 outline-none"
+        className="mt-8 w-full max-w-lg border rounded-lg p-2 mb-4 h-32 outline-none"
         value={input}
         onChange={(e) => setInput(e.target.value)}
         placeholder="Type your text here..."
